@@ -1,25 +1,35 @@
+import { useDispatch, useSelector } from "react-redux";
 import { ContactItem, List } from "./ContactList.styled";
-import PropTypes, { shape } from 'prop-types'
+import { deleteContact, selectContacts } from "Redux/contactsSlice";
+import { selectFilter } from "Redux/filterSlice";
 
-export const ContactList = ({contacts, deleteContact}) => {
+export const ContactList = () => {
+    const contacts = useSelector(selectContacts);
+    const filter = useSelector(selectFilter);
+    const dispatch = useDispatch();
+
+    const handleClick = (id) => {
+        dispatch(deleteContact(id));
+    }
+
+    const getVisibleContacts = () => {
+
+    return contacts.filter(contact => contact.contact.name.includes(filter)); 
+
+    
+            
+    }
+    
     return (
         <List>
-            {contacts.map(contact => {
-                const { id, name, number } = contact;
+            {getVisibleContacts().map(item => {
+                const { id, contact} = item;
+                const {name, number} = contact;
                 return <ContactItem key={id}>
                     <p>{name} : {number}</p>
-                    <button type="button" onClick={()=>{deleteContact(id)}}>Delete</button>
+                    <button type="button" onClick={() => handleClick(id)}>Delete</button>
                 </ContactItem>
             })}
         </List>
     )
-}
-
-ContactList.propTypes = {
-    contacts: PropTypes.arrayOf(shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        number: PropTypes.string.isRequired,
-    })),
-    deleteContact: PropTypes.func
 }

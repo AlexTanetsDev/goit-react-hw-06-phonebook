@@ -1,16 +1,25 @@
 import { FormLabel } from "components/ContactForm/ContactForm.styled"
-import PropTypes from 'prop-types'
+import { useDispatch } from "react-redux";
+import { setFilter } from "Redux/filterSlice";
+import { useState } from "react";
 
-export const Filter = ({value, onInputChange}) => {
+export const Filter = () => {
+
+    const dispatch = useDispatch();
+    const [filterValue, setFilterValue] = useState("");
+     
+    const handleFilterChange = e => {
+        const value = e.target.value;
+        setFilterValue(value);
+
+        dispatch(setFilter(value));
+}
+    
+
     return (
         <FormLabel>Find contacts by name
-            <input type="text" value={value} onChange={ onInputChange } />
+            <input type="text" value={filterValue}  onChange={ handleFilterChange } />
         </FormLabel>
     )
 }
 
-
-Filter.propTypes = {
-    value: PropTypes.string.isRequired,
-    onInputChange: PropTypes.func
-}
